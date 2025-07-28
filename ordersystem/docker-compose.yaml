@@ -1,0 +1,53 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+    container_name: orders_app
+    ports:
+      - "8080:8080"
+      - "50051:50051"
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - orders-network
+
+  db:
+    image: postgres:15
+    container_name: orders_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: orders
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - orders-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  adminer:
+    image: adminer
+    container_name: orders_adminer
+    ports:
+      - "8081:8080"
+    networks:
+      - orders-network
+
+volumes:
+  pgdata:
+
+networks:
+  orders-network:
+    driver: bridge
