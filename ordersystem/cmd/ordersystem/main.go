@@ -1,45 +1,70 @@
 package main
 
 import (
+	"context"
 	"log"
+	"net"
 	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	"google.golang.org/grpc"
 
 	"ordersystem/configs"
 	"ordersystem/internal/infra/database"
+	"ordersystem/internal/infra/grpc/service"
+	pb "ordersystem/internal/infra/grpc/pb"
 	"ordersystem/internal/infra/web"
 	"ordersystem/internal/usecase"
 )
 
 func main() {
-	// Carregar variáveis do .env
-	if err := godotenv.Load(); err != nil {
-		log.Println("⚠️  .env não encontrado, usando variáveis de ambiente")
-	}
+	// Carrega variáveis de ambiente
+	_ = godotenv.Load()
 
-	// Conectar ao banco
+	// Conecta ao banco
 	db, err := configs.LoadDB()
 	if err != nil {
-		log.Fatalf("❌ erro ao conectar ao banco: %v", err)
+		log.Fatalf("erro ao conectar BD: %v", err)
 	}
 	defer db.Close()
 
-	// Setup do repositório e usecase
+	// Repositório e usecase
 	repo := database.NewOrderRepository(db)
-	usecase := usecase.NewListOrdersUseCase(repo)
-	handler := web.NewOrderHandler(usecase)
+	uc := usecase.NewListOrdersUseCase(repo)
 
-	// Iniciar servidor HTTP
-	r := gin.Default()
-	r.GET("/order", handler.ListOrders)
+	// --- HTTP (Gin) ---
+	httpPort := os.Getenv("HTTP_PORT")
+	if httpPort == "" {
+		httpPort = "8080"
+	}
+	router := gin.Default()
+	httpHandler := web.NewOrderHandler(uc)
+	router.GET("/order", httpHandler.ListOrders)
 
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
+	// Inicia HTTP em goroutine
+	go func() {
+		log.Printf("HTTP rodando em :%s", httpPort)
+		if err := router.Run(":" + httpPort); err != nil {
+			log.Fatalf("failed to start HTTP: %v", err)
+		}
+	}()
+
+	// --- gRPC ---
+	grpcPort := os.Getenv("GRPC_PORT")
+	if grpcPort == "" {
+		grpcPort = "50051"
+	}
+	lis, err := net.Listen("tcp", ":"+grpcPort)
+	if err != nil {
+		log.Fatalf("failed to listen gRPC: %v", err)
 	}
 
-	log.Printf("🚀 Servidor rodando em http://localhost:%s/order", port)
-	r.Run(":" + port)
+	grpcServer := grpc.NewServer()
+	pb.RegisterOrderServiceServer(grpcServer, service.NewOrderServiceServer(uc))
+
+	log.Printf("gRPC rodando em :%s", grpcPort)
+	if err := grpcServer.Serve(lis); err != nil {
+		log.Fatalf("failed to start gRPC: %v", err)
+	}
 }
