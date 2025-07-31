@@ -1,6 +1,6 @@
 package graph
 
-import "ordersystem/internal/usecase"
+import "github.com/VitorHMatzembacher/Desafio_Clean_Architecture_FullCycle/internal/usecase"
 
 type Resolver struct {
 	ListOrdersUseCase *usecase.ListOrdersUseCase

@@ -3,7 +3,8 @@ package database
 import (
 	"context"
 	"database/sql"
-	"ordersystem/internal/entity"
+
+	"github.com/VitorHMatzembacher/Desafio_Clean_Architecture_FullCycle/internal/entity"
 )
 
 type OrderRepository struct {

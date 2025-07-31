@@ -9,15 +9,15 @@ import (
 	"github.com/joho/godotenv"
 	"google.golang.org/grpc"
 
-	"ordersystem/configs"
-	"ordersystem/internal/infra/database"
-	pb "ordersystem/internal/infra/grpc/pb"
-	"ordersystem/internal/infra/grpc/service"
-	"ordersystem/internal/infra/web"
-	"ordersystem/internal/usecase"
+	"github.com/VitorHMatzembacher/Desafio_Clean_Architecture_FullCycle/configs"
+	"github.com/VitorHMatzembacher/Desafio_Clean_Architecture_FullCycle/internal/infra/database"
+	pb "github.com/VitorHMatzembacher/Desafio_Clean_Architecture_FullCycle/internal/infra/grpc/pb"
+	"github.com/VitorHMatzembacher/Desafio_Clean_Architecture_FullCycle/internal/infra/grpc/service"
+	"github.com/VitorHMatzembacher/Desafio_Clean_Architecture_FullCycle/internal/infra/web"
+	"github.com/VitorHMatzembacher/Desafio_Clean_Architecture_FullCycle/internal/usecase"
 
-	graph "ordersystem/internal/infra/graph"
-	"ordersystem/internal/infra/graph/generated"
+	graph "github.com/VitorHMatzembacher/Desafio_Clean_Architecture_FullCycle/internal/infra/graph"
+	"github.com/VitorHMatzembacher/Desafio_Clean_Architecture_FullCycle/internal/infra/graph/generated"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"

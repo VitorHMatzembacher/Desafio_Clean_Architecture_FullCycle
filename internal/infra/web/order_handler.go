@@ -3,7 +3,7 @@ package web
 import (
 	"net/http"
 
-	"ordersystem/internal/usecase"
+	"github.com/VitorHMatzembacher/Desafio_Clean_Architecture_FullCycle/internal/usecase"
 
 	"github.com/gin-gonic/gin"
 )

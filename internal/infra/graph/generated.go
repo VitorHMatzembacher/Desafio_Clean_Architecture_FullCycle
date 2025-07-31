@@ -2,7 +2,8 @@ package graph
 
 import (
 	"context"
-	"ordersystem/internal/infra/graph/model"
+
+	"github.com/VitorHMatzembacher/Desafio_Clean_Architecture_FullCycle/internal/infra/graph/model"
 )
 
 type QueryResolver interface {

@@ -2,9 +2,9 @@ package service
 
 import (
 	"context"
-	"ordersystem/internal/entity"
-	"ordersystem/internal/usecase"
-	pb "ordersystem/internal/infra/grpc/pb"
+
+	pb "github.com/VitorHMatzembacher/Desafio_Clean_Architecture_FullCycle/internal/infra/grpc/pb"
+	"github.com/VitorHMatzembacher/Desafio_Clean_Architecture_FullCycle/internal/usecase"
 )
 
 type OrderServiceServer struct {

@@ -185,7 +185,7 @@ const file_proto_order_proto_rawDesc = "" +
 	"\x05Empty26\n" +
 	"\fOrderService\x12&\n" +
 	"\n" +
-	"ListOrders\x12\t.pb.Empty\x1a\r.pb.OrderListB$Z\"ordersystem/internal/infra/grpc/pbb\x06proto3"
+	"ListOrders\x12\t.pb.Empty\x1a\r.pb.OrderListB$Z\"github.com/VitorHMatzembacher/Desafio_Clean_Architecture_FullCycle/internal/infra/grpc/pbb\x06proto3"
 
 var (
 	file_proto_order_proto_rawDescOnce sync.Once

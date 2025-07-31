@@ -2,7 +2,8 @@ package usecase
 
 import (
 	"context"
-	"ordersystem/internal/entity"
+
+	"github.com/VitorHMatzembacher/Desafio_Clean_Architecture_FullCycle/internal/entity"
 )
 
 type OrderRepository interface {
