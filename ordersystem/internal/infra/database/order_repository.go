@@ -21,7 +21,7 @@ func (r *OrderRepository) FindAll(ctx context.Context) ([]*entity.Order, error) 
 	}
 	defer rows.Close()
 
-	var orders []*entity.Order
+	orders := make([]*entity.Order, 0)
 
 	for rows.Next() {
 		var o entity.Order

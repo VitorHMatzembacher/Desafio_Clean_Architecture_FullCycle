@@ -1,1 +1,0 @@
-# Desafio_Clean_Architecture_FullCycle

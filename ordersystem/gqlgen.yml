@@ -1,0 +1,15 @@
+schema:
+  - internal/infra/graph/schema.graphqls
+
+exec:
+  filename: internal/infra/graph/schema.resolvers.go
+  package: graph
+
+model:
+  filename: internal/infra/graph/model/models_gen.go
+  package: model
+
+resolver:
+  layout: follow-schema
+  dir: internal/infra/graph
+  package: graph
