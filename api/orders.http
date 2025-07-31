@@ -1,4 +1,12 @@
-### Get all orders
-GET http://localhost:8080/order
+### Cria uma order
+POST http://localhost:8080/order
 Content-Type: application/json
 
+{
+  "id": "123",
+  "price": 100,
+  "tax": 20
+}
+
+### Lista todas as orders (REST)
+GET http://localhost:8080/order

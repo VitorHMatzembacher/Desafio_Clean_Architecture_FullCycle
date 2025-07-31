@@ -16,7 +16,7 @@ func NewOrderServiceServer(uc *usecase.ListOrdersUseCase) *OrderServiceServer {
 	return &OrderServiceServer{ListOrdersUseCase: uc}
 }
 
-func (s *OrderServiceServer) ListOrders(ctx context.Context, _ *pb.Empty) (*pb.OrderList, error) {
+func (s *OrderServiceServer) ListOrders(ctx context.Context, _ *pb.Blank) (*pb.OrderList, error) {
 	orders, err := s.ListOrdersUseCase.Execute(ctx)
 	if err != nil {
 		return nil, err
@@ -26,9 +26,9 @@ func (s *OrderServiceServer) ListOrders(ctx context.Context, _ *pb.Empty) (*pb.O
 	for _, o := range orders {
 		resp.Orders = append(resp.Orders, &pb.Order{
 			Id:         o.ID.String(),
-			Price:      o.Price,
-			Tax:        o.Tax,
-			FinalPrice: o.FinalPrice,
+			Price:      float32(o.Price),
+			Tax:        float32(o.Tax),
+			FinalPrice: float32(o.FinalPrice),
 		})
 	}
 	return resp, nil

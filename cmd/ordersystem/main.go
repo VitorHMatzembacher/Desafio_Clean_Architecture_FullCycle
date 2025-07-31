@@ -6,6 +6,8 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
+	graphql "github.com/graph-gophers/graphql-go"
+	"github.com/graph-gophers/graphql-go/relay"
 	"github.com/joho/godotenv"
 	"google.golang.org/grpc"
 
@@ -17,10 +19,6 @@ import (
 	"github.com/VitorHMatzembacher/Desafio_Clean_Architecture_FullCycle/internal/usecase"
 
 	graph "github.com/VitorHMatzembacher/Desafio_Clean_Architecture_FullCycle/internal/infra/graph"
-	"github.com/VitorHMatzembacher/Desafio_Clean_Architecture_FullCycle/internal/infra/graph/generated"
-
-	"github.com/99designs/gqlgen/graphql/handler"
-	"github.com/99designs/gqlgen/graphql/playground"
 )
 
 func main() {
@@ -28,35 +26,35 @@ func main() {
 
 	db, err := configs.LoadDB()
 	if err != nil {
-		log.Fatalf(" erro ao conectar BD: %v", err)
+		log.Fatalf("erro ao conectar BD: %v", err)
 	}
 	defer db.Close()
 
 	repo := database.NewOrderRepository(db)
 	uc := usecase.NewListOrdersUseCase(repo)
 
+	router := gin.Default()
+	router.GET("/order", web.NewOrderHandler(uc).ListOrders)
+
+	schemaSDL := graph.MustLoadSchema()
+
+	schema := graphql.MustParseSchema(
+		schemaSDL,
+		&graph.Resolver{ListOrdersUseCase: uc},
+	)
+
+	router.POST("/query", gin.WrapH(&relay.Handler{Schema: schema}))
+
+	router.GET("/playground", gin.WrapH(&relay.Handler{Schema: schema}))
+
 	httpPort := os.Getenv("HTTP_PORT")
 	if httpPort == "" {
 		httpPort = "8080"
 	}
-
-	router := gin.Default()
-
-	httpHandler := web.NewOrderHandler(uc)
-	router.GET("/order", httpHandler.ListOrders)
-
-	srv := handler.NewDefaultServer(
-		generated.NewExecutableSchema(
-			generated.Config{Resolvers: &graph.Resolver{ListOrdersUseCase: uc}},
-		),
-	)
-	router.POST("/query", gin.WrapH(srv))
-	router.GET("/playground", gin.WrapH(playground.Handler("GraphQL Playground", "/query")))
-
 	go func() {
-		log.Printf(" HTTP rodando em :%s", httpPort)
+		log.Printf("HTTP rodando em :%s", httpPort)
 		if err := router.Run(":" + httpPort); err != nil {
-			log.Fatalf(" failed to start HTTP: %v", err)
+			log.Fatalf("failed to start HTTP: %v", err)
 		}
 	}()
 
@@ -64,16 +62,15 @@ func main() {
 	if grpcPort == "" {
 		grpcPort = "50051"
 	}
-
 	lis, err := net.Listen("tcp", ":"+grpcPort)
 	if err != nil {
-		log.Fatalf(" failed to listen gRPC: %v", err)
+		log.Fatalf("failed to listen gRPC: %v", err)
 	}
 	grpcServer := grpc.NewServer()
 	pb.RegisterOrderServiceServer(grpcServer, service.NewOrderServiceServer(uc))
 
-	log.Printf(" gRPC rodando em :%s", grpcPort)
+	log.Printf("gRPC rodando em :%s", grpcPort)
 	if err := grpcServer.Serve(lis); err != nil {
-		log.Fatalf(" failed to start gRPC: %v", err)
+		log.Fatalf("failed to start gRPC: %v", err)
 	}
 }
