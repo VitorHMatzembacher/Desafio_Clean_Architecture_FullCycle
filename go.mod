@@ -5,7 +5,6 @@ go 1.23.0
 toolchain go1.23.11
 
 require (
-	github.com/99designs/gqlgen v0.17.78
 	github.com/gin-gonic/gin v1.10.1
 	github.com/google/uuid v1.6.0
 	github.com/graph-gophers/graphql-go v1.6.0
@@ -47,5 +46,3 @@ require (
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250528174236-200df99c418a // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
-
-replace github.com/VitorHMatzembacher/Desafio_Clean_Architecture_FullCycle => ./
