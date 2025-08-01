@@ -131,6 +131,3 @@ Veja exemplos em `api/orders.http` ou diretamente:
 
 ---
 
-## 📄 Licença
-
-Este projeto está disponível sob a [MIT License](LICENSE).
