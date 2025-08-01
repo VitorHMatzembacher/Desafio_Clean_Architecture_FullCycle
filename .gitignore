@@ -6,5 +6,4 @@ bin/
 .idea/
 *.iml
 
-# Módulos Go (opcional, mas recomendado)
 vendor/
