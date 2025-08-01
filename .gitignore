@@ -1,3 +1,10 @@
+# Binários
 bin/
 *.exe
-.env
+
+# IDE (JetBrains)
+.idea/
+*.iml
+
+# Módulos Go (opcional, mas recomendado)
+vendor/
