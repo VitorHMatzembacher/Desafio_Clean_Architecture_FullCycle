@@ -48,7 +48,7 @@ Toda a infraestrutura roda com Docker Compose, bastando um único comando para l
 Para subir a aplicação pela primeira vez (ou sempre que quiser recriar o banco e reexecutar as migrations), rode:
 ```bash
 docker-compose down -v   # opcional na primeira vez ou se precisar reaplicar migrations
-docker-compose up
+docker-compose up --build
 ```
 
 Se você já subiu uma vez e não alterou as migrations, basta:
@@ -109,7 +109,7 @@ Veja exemplos em `api/orders.http` ou diretamente:
   { "query": "{ listOrders { id price tax finalPrice } }" }
   ```
 
-*Mais adiante, você encontrará também o GraphQL Playground como uma opção extra.*
+*Bônus*: você também pode usar o **GraphQL Playground** em `http://localhost:8080/playground` para explorar o schema e testar queries de forma interativa.
 
 ---
 
