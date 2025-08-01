@@ -13,40 +13,46 @@ import (
 
 	"github.com/VitorHMatzembacher/Desafio_Clean_Architecture_FullCycle/configs"
 	"github.com/VitorHMatzembacher/Desafio_Clean_Architecture_FullCycle/internal/infra/database"
+	graph "github.com/VitorHMatzembacher/Desafio_Clean_Architecture_FullCycle/internal/infra/graph"
 	pb "github.com/VitorHMatzembacher/Desafio_Clean_Architecture_FullCycle/internal/infra/grpc/pb"
 	"github.com/VitorHMatzembacher/Desafio_Clean_Architecture_FullCycle/internal/infra/grpc/service"
 	"github.com/VitorHMatzembacher/Desafio_Clean_Architecture_FullCycle/internal/infra/web"
 	"github.com/VitorHMatzembacher/Desafio_Clean_Architecture_FullCycle/internal/usecase"
-
-	graph "github.com/VitorHMatzembacher/Desafio_Clean_Architecture_FullCycle/internal/infra/graph"
 )
 
 func main() {
 	_ = godotenv.Load()
 
+	// conecta ao banco
 	db, err := configs.LoadDB()
 	if err != nil {
 		log.Fatalf("erro ao conectar BD: %v", err)
 	}
 	defer db.Close()
 
+	// monta o repositório e os use cases
 	repo := database.NewOrderRepository(db)
-	uc := usecase.NewListOrdersUseCase(repo)
+	createUc := usecase.NewCreateOrderUseCase(repo)
+	listUc := usecase.NewListOrdersUseCase(repo)
 
+	// instancia o handler REST com ambos os use cases
+	handler := web.NewOrderHandler(createUc, listUc)
+
+	// 🚀 REST
 	router := gin.Default()
-	router.GET("/order", web.NewOrderHandler(uc).ListOrders)
+	router.POST("/order", handler.CreateOrder)
+	router.GET("/order", handler.ListOrders)
 
+	// 🚀 GraphQL
 	schemaSDL := graph.MustLoadSchema()
-
 	schema := graphql.MustParseSchema(
 		schemaSDL,
-		&graph.Resolver{ListOrdersUseCase: uc},
+		&graph.Resolver{ListOrdersUseCase: listUc},
 	)
-
 	router.POST("/query", gin.WrapH(&relay.Handler{Schema: schema}))
-
 	router.GET("/playground", gin.WrapH(&relay.Handler{Schema: schema}))
 
+	// HTTP listener
 	httpPort := os.Getenv("HTTP_PORT")
 	if httpPort == "" {
 		httpPort = "8080"
@@ -58,6 +64,7 @@ func main() {
 		}
 	}()
 
+	// 🚀 gRPC
 	grpcPort := os.Getenv("GRPC_PORT")
 	if grpcPort == "" {
 		grpcPort = "50051"
@@ -67,7 +74,7 @@ func main() {
 		log.Fatalf("failed to listen gRPC: %v", err)
 	}
 	grpcServer := grpc.NewServer()
-	pb.RegisterOrderServiceServer(grpcServer, service.NewOrderServiceServer(uc))
+	pb.RegisterOrderServiceServer(grpcServer, service.NewOrderServiceServer(listUc))
 
 	log.Printf("gRPC rodando em :%s", grpcPort)
 	if err := grpcServer.Serve(lis); err != nil {

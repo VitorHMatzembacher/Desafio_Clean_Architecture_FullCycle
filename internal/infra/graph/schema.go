@@ -3,9 +3,9 @@ package graph
 import _ "embed"
 
 //go:embed schema.graphqls
-var schemaSDL string
+var sdl string
 
-// MustLoadSchema retorna o conteúdo do seu schema.graphqls
+// MustLoadSchema retorna o SDL embutido de schema.graphqls
 func MustLoadSchema() string {
-	return schemaSDL
+	return sdl
 }

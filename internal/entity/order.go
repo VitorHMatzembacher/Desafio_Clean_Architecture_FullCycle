@@ -1,6 +1,9 @@
 package entity
 
-import "github.com/google/uuid"
+import (
+	"context"
+	"github.com/google/uuid"
+)
 
 type Order struct {
 	ID         uuid.UUID
@@ -9,12 +12,7 @@ type Order struct {
 	FinalPrice float64
 }
 
-func NewOrder(price, tax float64) *Order {
-	finalPrice := price + tax
-	return &Order{
-		ID:         uuid.New(),
-		Price:      price,
-		Tax:        tax,
-		FinalPrice: finalPrice,
-	}
+type OrderRepository interface {
+	Create(ctx context.Context, o Order) error
+	FindAll(ctx context.Context) ([]*Order, error)
 }

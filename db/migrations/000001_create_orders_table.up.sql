@@ -1,6 +1,6 @@
-CREATE TABLE orders (
-    id UUID PRIMARY KEY,
-    price NUMERIC NOT NULL,
-    tax NUMERIC NOT NULL,
-    final_price NUMERIC NOT NULL
+CREATE TABLE IF NOT EXISTS orders (
+  id UUID PRIMARY KEY,
+  price NUMERIC NOT NULL,
+  tax NUMERIC NOT NULL,
+  final_price NUMERIC NOT NULL
 );

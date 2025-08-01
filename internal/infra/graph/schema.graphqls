@@ -1,10 +1,10 @@
+type Query {
+  listOrders: [Order!]!
+}
+
 type Order {
   id: ID!
   price: Float!
   tax: Float!
   finalPrice: Float!
-}
-
-type Query {
-  listOrders: [Order!]!
 }

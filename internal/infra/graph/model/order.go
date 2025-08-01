@@ -1,8 +1,12 @@
 package model
 
+import "github.com/graph-gophers/graphql-go"
+
+// Order é só um DTO — o binding será feito pelos
+// métodos no orderResolver, não por campos diretamente.
 type Order struct {
-	ID         string  `json:"id"`
-	Price      float64 `json:"price"`
-	Tax        float64 `json:"tax"`
-	FinalPrice float64 `json:"finalPrice"`
+	ID         graphql.ID
+	Price      float64
+	Tax        float64
+	FinalPrice float64
 }

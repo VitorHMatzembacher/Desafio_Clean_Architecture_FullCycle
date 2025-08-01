@@ -1,12 +1,17 @@
-### Cria uma order
+### Criar uma nova Order (REST)
 POST http://localhost:8080/order
 Content-Type: application/json
 
 {
-  "id": "123",
   "price": 100,
   "tax": 20
 }
 
-### Lista todas as orders (REST)
+### Listar todas as Orders (REST)
 GET http://localhost:8080/order
+
+### Listar Orders (GraphQL)
+POST http://localhost:8080/query
+Content-Type: application/json
+
+{ "query":"{ listOrders { id price tax finalPrice } }" }
